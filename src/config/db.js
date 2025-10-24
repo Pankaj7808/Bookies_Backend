@@ -1,20 +1,26 @@
 import { MongoClient } from "mongodb";
+import dotenv from "dotenv";
 
-const uri = "mongodb+srv://pj:hav33nD.@cluster0.zfrg3.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
-
+dotenv.config();
+const uri = process.env.MONGO_URI;
+console.log(uri)
 const client = new MongoClient(uri);
 
 async function run() {
   try {
     await client.connect();
+    console.log("Connected successfully to MongoDB");
 
-    // Choose database (if not specified, defaults to "test")
-    const db = client.db("myDatabaseName");
+    const db = client.db("bookies");
+    const collection = db.collection("test"); // example collection
+    const docs = await collection.find({}).toArray();
+    console.log(docs);
 
-
+  } catch (err) {
+    console.error("Error connecting to MongoDB:", err);
   } finally {
     await client.close();
   }
 }
 
-run().catch(console.dir);
+run();
